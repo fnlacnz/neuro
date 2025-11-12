@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Neuro-Productivity Playground</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(90deg, #0078d7, #00b294);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .progress-container {
+      width: 80%;
+      margin: 20px auto;
+      background: #ddd;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 20px;
+      width: 12%; /* dynamic progress */
+      background: #ff8c00;
+      transition: width 0.5s;
+    }
+    .card {
+      background: white;
+      margin: 20px auto;
+      padding: 20px;
+      width: 80%;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .quiz {
+      margin-top: 15px;
+    }
+    button {
+      background: #0078d7;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005a9e;
+    }
+    .streak {
+      text-align: center;
+      font-weight: bold;
+      margin: 20px;
+      color: #00b294;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🚀 Neuro-Productivity Playground</h1>
+    <p>You’re 12% into mastery… keep going!</p>
+  </header>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="card">
+    <h2>🧩 Learning Block 1</h2>
+    <p>Chunked info: 3 bite-sized insights about focus & flow.</p>
+    <div class="quiz">
+      <p><strong>Quiz:</strong> What triggers dopamine release?</p>
+      <button onclick="checkAnswer(true)">Small wins</button>
+      <button onclick="checkAnswer(false)">Long lectures</button>
+    </div>
+  </div>
+
+  <div class="streak" id="streakTracker">
+    🔥 Streak: 3 days in a row!
+  </div>
+
+  <script>
+    let progress = 12;
+    let streak = 3;
+
+    function checkAnswer(correct) {
+      if (correct) {
+        alert("✅ Correct! Dopamine loves micro-rewards.");
+        progress += 10;
+        document.getElementById("progressBar").style.width = progress + "%";
+      } else {
+        alert("❌ Not quite. Try again!");
+      }
+    }
+
+    // Simulate streak growth
+    setInterval(() => {
+      streak++;
+      document.getElementById("streakTracker").innerText = "🔥 Streak: " + streak + " days in a row!";
+    }, 10000); // every 10s for demo
+  </script>
+</body>
+</html>
