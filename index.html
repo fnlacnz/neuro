@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nuclear System — Home</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="index.html">⚛ Nuclear System</a>
+    <div class="links">
+      <a href="about.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <h1>Execute the most important thing, today.</h1>
+    <p>1 day = 20 points. Max 2 categories. Weekly goal ≥ 50%.</p>
+    <a class="btn" href="#nuclear">Open the system</a>
+  </header>
+
+  <main class="wrap">
+    <section id="nuclear" class="card">
+      <h2>Daily points tracker</h2>
+      <p class="muted">Click tasks to score points. Aim ≥ 70 per week.</p>
+      <div id="days" class="days"></div>
+      <div class="summary">
+        <div>Weekly total: <span id="total">0</span> / 120</div>
+        <div>Status: <span id="status">Not started</span></div>
+        <button class="btn ghost" id="reset">Reset week</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Countdown</h2>
+      <iframe src="https://indify.co/widgets/live/countdown/D7C8VOnWAxjlr5cGJLau" width="100%" height="160" style="border:0;border-radius:12px;"></iframe>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Made for momentum. Bengaluru → Notion‑friendly embeds.</p>
+  </footer>
+
+<script>
+  const plan = [
+    {day:'🟡 Monday', tasks:[['University/Exam prep',16],['Skill upgrade / Knowledge',4]]},
+    {day:'🟢 Tuesday', tasks:[['University/Exam prep',16],['Optional secondary',4]]},
+    {day:'🟠 Wednesday', tasks:[['University/Exam prep',16]]},
+    {day:'🔴 Thursday', tasks:[['University/Exam prep',16]]},
+    {day:'🔵 Friday', tasks:[['University/Exam prep',16]]},
+    {day:'🟤 Saturday', tasks:[['University/Exam prep',16],['Performance review',4]]},
+  ];
+
+  let total = parseInt(localStorage.getItem('weeklyTotal')||'0',10);
+
+  function renderDays(){
+    const wrap = document.getElementById('days');
+    wrap.innerHTML = '';
+    plan.forEach((d, di)=>{
+      const day = document.createElement('div');
+      day.className = 'day';
+      day.innerHTML = `<h3>${d.day} (20 points)</h3>`;
+      d.tasks.forEach((t, ti)=>{
+        const item = document.createElement('div');
+        item.className = 'task';
+        const id = `d${di}t${ti}`;
+        const checked = localStorage.getItem(id)==='1';
+        item.innerHTML = `
+          <label>
+            <input type="checkbox" id="${id}" ${checked?'checked':''}>
+            ${t[0]} <span class="pts">(${t[1]} pts)</span>
+          </label>
+          <div class="actions">
+            <button class="mini" onclick="editTask(${di},${ti})">Edit</button>
+            <button class="mini danger" onclick="removeTask(${di},${ti})">Delete</button>
+          </div>
+        `;
+        item.querySelector('input').addEventListener('change', (e)=>{
+          const pts = t[1];
+          if(e.target.checked){ total += pts; localStorage.setItem(id,'1'); }
+          else { total -= pts; localStorage.setItem(id,'0'); }
+          saveTotal();
+          renderSummary();
+        });
+        day.appendChild(item);
+      });
+      const add = document.createElement('button');
+      add.className = 'mini';
+      add.textContent = 'Add task';
+      add.onclick = ()=> addTask(di);
+      day.appendChild(add);
+      wrap.appendChild(day);
+    });
+  }
+
+  function addTask(di){
+    const name = prompt('Task name');
+    const pts = parseInt(prompt('Points (1–20)'),10);
+    if(!name || !pts) return;
+    plan[di].tasks.push([name, pts]);
+    renderDays(); renderSummary();
+  }
+
+  function editTask(di, ti){
+    const current = plan[di].tasks[ti];
+    const name = prompt('Edit task name', current[0]);
+    const pts = parseInt(prompt('Edit points (1–20)', current[1]),10);
+    if(!name || !pts) return;
+    plan[di].tasks[ti] = [name, pts];
+    renderDays(); renderSummary();
+  }
+
+  function removeTask(di, ti){
+    if(!confirm('Delete this task?')) return;
+    const id = `d${di}t${ti}`;
+    const checkbox = document.getElementById(id);
+    if(checkbox && checkbox.checked){ total -= plan[di].tasks[ti][1]; }
+    localStorage.removeItem(id);
+    plan[di].tasks.splice(ti,1);
+    saveTotal();
+    renderDays(); renderSummary();
+  }
+
+  function renderSummary(){
+    document.getElementById('total').textContent = total;
+    document.getElementById('status').textContent = total>=70 ? '✅ Goal achieved!' : '⚠ Keep going!';
+  }
+
+  function saveTotal(){ localStorage.setItem('weeklyTotal', total); }
+
+  document.getElementById('reset').onclick = ()=>{
+    total = 0; saveTotal();
+    plan.forEach((d,di)=> d.tasks.forEach((t,ti)=> localStorage.removeItem(`d${di}t${ti}`)));
+    renderDays(); renderSummary();
+  };
+
+  renderDays(); renderSummary();
+</script>
+</body>
+</html>
