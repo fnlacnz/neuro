@@ -1,109 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Neuro-Productivity Playground</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
-    header {
-      background: linear-gradient(90deg, #0078d7, #00b294);
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    .progress-container {
-      width: 80%;
-      margin: 20px auto;
-      background: #ddd;
-      border-radius: 20px;
-      overflow: hidden;
-    }
-    .progress-bar {
-      height: 20px;
-      width: 12%; /* dynamic progress */
-      background: #ff8c00;
-      transition: width 0.5s;
-    }
-    .card {
-      background: white;
-      margin: 20px auto;
-      padding: 20px;
-      width: 80%;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .quiz {
-      margin-top: 15px;
-    }
-    button {
-      background: #0078d7;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #005a9e;
-    }
-    .streak {
-      text-align: center;
-      font-weight: bold;
-      margin: 20px;
-      color: #00b294;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nuke xyz — Neuro Productive</title>
+<style>
+  :root{
+    --bg:#0f1220; --card:#171a2a; --text:#e6e9f2; --muted:#9aa3b2;
+    --primary:#5ac8fa; --accent:#ff8c00; --success:#22c55e; --danger:#ef4444;
+    --warn:#f59e0b; --link:#8ab4f8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  a{color:var(--link);text-decoration:none}
+  header{padding:22px 20px;background:linear-gradient(90deg,#1c2240,#15213a)}
+  header h1{margin:0 0 6px;font-size:28px}
+  header p{margin:0;color:var(--muted)}
+  .wrap{max-width:980px;margin:0 auto;padding:18px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--card);border:1px solid #273052;border-radius:14px;padding:16px}
+  .card h2{margin:0 0 10px;font-size:19px}
+  .muted{color:var(--muted)}
+  .progress{height:14px;background:#24304a;border-radius:10px;overflow:hidden}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,var(--primary),#00d1b2);transition:width .4s}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .tag{padding:6px 10px;border-radius:999px;border:1px solid #2c3957;font-size:13px;color:var(--muted)}
+  .kban{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .item{background:#1c2137;border:1px solid #2a3555;border-radius:10px;padding:10px}
+  .good{border-color:#1e814d}
+  .bad{border-color:#8a2c2c}
+  .cta{display:flex;gap:10px;flex-wrap:wrap}
+  button{background:var(--primary);color:#071227;border:none;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
+  button.secondary{background:#2a3555;color:var(--text)}
+  button.warn{background:var(--warn);color:#111}
+  button.danger{background:var(--danger)}
+  .mini{font-size:12px;color:var(--muted)}
+  .xp{font-weight:700;color:#7ee0ff}
+  .streak{font-weight:700;color:#ffd166}
+  .section-title{display:flex;justify-content:space-between;align-items:center}
+  .inline{display:inline-flex;gap:10px;align-items:center}
+  .pomodoro{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .timer{display:flex;flex-direction:column;gap:8px}
+  .big{font-size:36px;font-weight:800;letter-spacing:1px}
+  .quote{font-style:italic;color:#b9c1d1}
+  .hidden{display:none}
+  .hr{height:1px;background:#273052;margin:10px 0}
+  .checklist label{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#1b2134;border:1px solid #303c5f;border-radius:10px}
+  input[type="time"]{background:#1b2134;color:var(--text);border:1px solid #303c5f;border-radius:8px;padding:6px}
+  .alarm-set{color:#7ee0ff;font-weight:700}
+  iframe{border:0;border-radius:12px;overflow:hidden}
+  @media (max-width:860px){.grid,.kban,.pomodoro{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <header>
-    <h1>🚀 Neuro-Productivity Playground</h1>
-    <p>You’re 12% into mastery… keep going!</p>
-  </header>
+<header>
+  <h1>🔥 Nuke xyz</h1>
+  <p>Deadline locked. Micro-wins daily. Dopamine on delivery.</p>
+</header>
 
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
+<div class="wrap">
 
-  <div class="card">
-    <h2>🧩 Learning Block 1</h2>
-    <p>Chunked info: 3 bite-sized insights about focus & flow.</p>
-    <div class="quiz">
-      <p><strong>Quiz:</strong> What triggers dopamine release?</p>
-      <button onclick="checkAnswer(true)">Small wins</button>
-      <button onclick="checkAnswer(false)">Long lectures</button>
+  <!-- Deadline + progress + countdown -->
+  <div class="grid">
+    <div class="card">
+      <div class="section-title">
+        <h2>⏳ Deadline: 31st December</h2>
+        <span class="tag">Micro-deadlines: Weekly checkpoints</span>
+      </div>
+      <p class="muted">Objective: xyz needs to be achieved/nuked before 31st December.</p>
+      <div style="margin:10px 0 6px" class="row">
+        <span>Progress</span>
+        <span id="progressPct" class="xp">0%</span>
+      </div>
+      <div class="progress"><div id="progressBar" class="bar"></div></div>
+      <div class="row" style="margin-top:10px">
+        <button class="secondary" onclick="addProgress(5)">+5% micro-win</button>
+        <button class="secondary" onclick="addProgress(10)">+10% milestone</button>
+        <button class="warn" onclick="setMicroDeadline()">Set weekly checkpoint</button>
+      </div>
+      <div class="mini" id="nextCheckpoint"></div>
+      <div class="hr"></div>
+      <p class="muted">Countdown (Indify widget):</p>
+      <iframe src="https://indify.co/widgets/live/countdown/D7C8VOnWAxjlr5cGJLau" width="100%" height="160"></iframe>
+    </div>
+
+    <!-- Night-before ritual / implementation intention -->
+    <div class="card">
+      <h2>🎯 Must do: Define tomorrow today</h2>
+      <p class="muted">The tasks of the current day must be absolutely clear and defined a day before.</p>
+      <div class="checklist">
+        <label><input type="checkbox" id="ritualDefine"> Define tomorrow’s task</label>
+        <label><input type="checkbox" id="ritualAlarm"> Set alarm for the task</label>
+        <label><input type="checkbox" id="ritualVisualize"> Visualize success for 60 seconds</label>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <input type="time" id="alarmTime">
+        <button onclick="setAlarm()">⏰ Put alarm</button>
+        <span id="alarmStatus" class="alarm-set"></span>
+      </div>
+      <p class="mini">Implementation intention: If time = alarm → then start xyz immediately.</p>
     </div>
   </div>
 
-  <div class="streak" id="streakTracker">
-    🔥 Streak: 3 days in a row!
+  <!-- What works / What doesn’t (Kanban) -->
+  <div class="kban">
+    <div class="card">
+      <h2>✅ What works (do more)</h2>
+      <div class="list" id="worksList">
+        <div class="item good">Putting an alarm works.</div>
+        <div class="item good">Doing task xyz first thing in the morning gives great results.</div>
+        <div class="item good">Add your own → <button class="secondary" onclick="addItem('works')">+ add</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>❎ What doesn’t work (needs change)</h2>
+      <div class="list" id="failsList">
+        <div class="item bad">Waking up late screws up the whole schedule.</div>
+        <div class="item bad">Task abc at 6 pm is not as great. I am tired by then.</div>
+        <div class="item bad">Add your own → <button class="secondary" onclick="addItem('fails')">+ add</button></div>
+      </div>
+    </div>
   </div>
 
-  <script>
-    let progress = 12;
-    let streak = 3;
+  <!-- Tasks today / Tomorrow links + gamification -->
+  <div class="grid">
+    <div class="card">
+      <div class="section-title">
+        <h2>📅 Tasks today</h2>
+        <span class="tag inline">XP: <span id="xp" class="xp">0</span></span>
+      </div>
+      <p><a href="https://www.notion.so/2a7f08b33c46819db62df0c2f920626a?pvs=21" target="_blank">Open tasks today</a></p>
+      <div class="list" id="todayTasks">
+        <div class="item"><label><input type="checkbox" onchange="completeTask(this)"> Do xyz first thing</label></div>
+        <div class="item"><label><input type="checkbox" onchange="completeTask(this)"> 25-min deep work block</label></div>
+        <div class="item"><label><input type="checkbox" onchange="completeTask(this)"> Quick review + plan next</label></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button onclick="addTask('today')">+ add task</button>
+        <button class="secondary" onclick="resetTasks()">reset</button>
+      </div>
+      <p class="mini">Every completed task gives +10 XP and +3% progress. Surprise tips unlock at 30/60/90%.</p>
+    </div>
 
-    function checkAnswer(correct) {
-      if (correct) {
-        alert("✅ Correct! Dopamine loves micro-rewards.");
-        progress += 10;
-        document.getElementById("progressBar").style.width = progress + "%";
-      } else {
-        alert("❌ Not quite. Try again!");
-      }
+    <div class="card">
+      <h2>🟩 Instructions + Tomorrow</h2>
+      <p><a href="https://www.notion.so/2a7f08b33c4681269382d8986b71b80f?pvs=21" target="_blank">Open tomorrow</a></p>
+      <div class="hr"></div>
+      <p><strong>Answer (When next?):</strong> <span id="whenNext" class="muted">—</span></p>
+      <div class="row">
+        <input type="time" id="whenTime">
+        <button onclick="setWhen()">Set</button>
+      </div>
+      <p><strong>Answer (What next?):</strong> <span id="whatNext" class="muted">—</span></p>
+      <div class="row">
+        <input type="text" id="whatText" placeholder="Define the task precisely">
+        <button onclick="setWhat()">Set</button>
+      </div>
+      <div class="hr"></div>
+      <ul class="mini">
+        <li>Put an alarm clock on the answer. This creates a circle you cannot quit.</li>
+        <li>The answer cannot be left blank.</li>
+        <li>Define the task, time, and put an alarm at that time — now.</li>
+      </ul>
+      <p class="muted">You have successfully created a wheel of your success.</p>
+    </div>
+  </div>
+
+  <!-- Pomodoro + Streak + Variable rewards -->
+  <div class="card">
+    <div class="section-title">
+      <h2>⏱️ Pomodoro + Streak</h2>
+      <span class="tag">Flow state induction</span>
+    </div>
+    <div class="pomodoro">
+      <div class="timer">
+        <div class="big" id="focusClock">25:00</div>
+        <div class="row">
+          <button onclick="startFocus()">Start focus</button>
+          <button class="secondary" onclick="resetFocus()">Reset</button>
+        </div>
+        <p class="mini">25-min focus + 5-min break. Auto XP on completion.</p>
+      </div>
+      <div class="timer">
+        <div>🔥 Streak: <span id="streak" class="streak">0</span> days</div>
+        <button class="warn" onclick="markDay()">Mark today done</button>
+        <p class="mini">Maintain your streak to unlock boosts.</p>
+        <div id="reward" class="quote hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Surprise unlocks -->
+  <div class="card">
+    <h2>🎁 Surprise unlocks</h2>
+    <p class="mini">Variable reward: hidden tips appear at progress thresholds.</p>
+    <div id="tips">
+      <div id="tip30" class="item hidden">Tip @30%: Reduce friction. Prepare tools the night before.</div>
+      <div id="tip60" class="item hidden">Tip @60%: Protect mornings. One hard win before messages.</div>
+      <div id="tip90" class="item hidden">Tip @90%: Sprint. 3x 25-min blocks, then ship.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Persistent state
+  const S = {
+    progress: parseInt(localStorage.getItem('progress')||'0',10),
+    xp: parseInt(localStorage.getItem('xp')||'0',10),
+    streak: parseInt(localStorage.getItem('streak')||'0',10),
+    lastMarked: localStorage.getItem('lastMarked')||'',
+  };
+
+  // Progress
+  function renderProgress(){
+    const pct = Math.max(0, Math.min(100, S.progress));
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+    // unlock tips
+    document.getElementById('tip30').classList.toggle('hidden', pct < 30);
+    document.getElementById('tip60').classList.toggle('hidden', pct < 60);
+    document.getElementById('tip90').classList.toggle('hidden', pct < 90);
+  }
+  function addProgress(n){
+    S.progress = Math.min(100, S.progress + n);
+    localStorage.setItem('progress', S.progress);
+    renderProgress();
+  }
+
+  // XP
+  function renderXP(){ document.getElementById('xp').textContent = S.xp; }
+  function addXP(n){ S.xp += n; localStorage.setItem('xp', S.xp); renderXP(); }
+
+  // Micro-deadline (weekly checkpoint)
+  function setMicroDeadline(){
+    const d = new Date(); d.setDate(d.getDate()+7);
+    const s = d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+    document.getElementById('nextCheckpoint').textContent = 'Next checkpoint: ' + s;
+  }
+
+  // Alarm
+  function setAlarm(){
+    const t = document.getElementById('alarmTime').value;
+    if(!t){ alert('Pick a time'); return; }
+    localStorage.setItem('alarmTime', t);
+    document.getElementById('alarmStatus').textContent = 'Alarm set for ' + t;
+    // Browser notifications (if allowed)
+    if('Notification' in window){
+      Notification.requestPermission().then(p=>{
+        if(p==='granted'){ new Notification('Alarm scheduled for '+t+' — be ready to start xyz.'); }
+      });
     }
+  }
+  (function initAlarm(){
+    const t = localStorage.getItem('alarmTime');
+    if(t){ document.getElementById('alarmTime').value = t; document.getElementById('alarmStatus').textContent = 'Alarm set for ' + t; }
+  })();
 
-    // Simulate streak growth
-    setInterval(() => {
-      streak++;
-      document.getElementById("streakTracker").innerText = "🔥 Streak: " + streak + " days in a row!";
-    }, 10000); // every 10s for demo
-  </script>
+  // Works / Fails add item
+  function addItem(list){
+    const txt = prompt('Describe the item');
+    if(!txt) return;
+    const el = document.createElement('div');
+    el.className = 'item ' + (list==='works'?'good':'bad');
+    el.textContent = txt;
+    (list==='works'?document.getElementById('worksList'):document.getElementById('failsList')).prepend(el);
+  }
+
+  // Tasks, gamification
+  function completeTask(cb){
+    if(cb.checked){
+      addXP(10); addProgress(3);
+    } else {
+      addXP(-10); addProgress(-3);
+    }
+  }
+  function addTask(which){
+    const txt = prompt('Task description');
+    if(!txt) return;
+    const wrap = (which==='today')?document.getElementById('todayTasks'):document.getElementById('tomorrowTasks');
+    const item = document.createElement('div');
+    item.className='item';
+    item.innerHTML = '<label><input type="checkbox" onchange="completeTask(this)"> '+txt+'</label>';
+    wrap.appendChild(item);
+  }
+  function resetTasks(){
+    document.querySelectorAll('#todayTasks input[type=checkbox]').forEach(c=>{ if(c.checked){ c.checked=false; addXP(-10); addProgress(-3);} });
+  }
+
+  // When / What next
+  function setWhen(){
+    const t = document.getElementById('whenTime').value;
+    if(!t){ alert('Set a time'); return; }
+    localStorage.setItem('whenNext', t);
+    document.getElementById('whenNext').textContent = '⏰ ' + t;
+  }
+  function setWhat(){
+    const w = document.getElementById('whatText').value.trim();
+    if(!w){ alert('Define the task'); return; }
+    localStorage.setItem('whatNext', w);
+    document.getElementById('whatNext').textContent = w;
+  }
+  (function initWhenWhat(){
+    const wn = localStorage.getItem('whenNext'); const wt = localStorage.getItem('whatNext');
+    if(wn) document.getElementById('whenNext').textContent = '⏰ ' + wn;
+    if(wt) document.getElementById('whatNext').textContent = wt;
+  })();
+
+  // Pomodoro
+  let focusSecs = 25*60, timer=null;
+  function renderClock(){
+    const m = Math.floor(focusSecs/60).toString().padStart(2,'0');
+    const s = (focusSecs%60).toString().padStart(2,'0');
+    document.getElementById('focusClock').textContent = m+':'+s;
+  }
+  function startFocus(){
+    if(timer) return;
+    timer = setInterval(()=>{
+      focusSecs--;
+      renderClock();
+      if(focusSecs<=0){
+        clearInterval(timer); timer=null;
+        addXP(20); addProgress(5);
+        showReward('Focus block complete → +20 XP, +5% progress. Take a 5-min break.');
+        focusSecs = 25*60; renderClock();
+      }
+    },1000);
+  }
+  function resetFocus(){ clearInterval(timer); timer=null; focusSecs=25*60; renderClock(); }
+
+  // Streak
+  function markDay(){
+    const today = new Date().toDateString();
+    if(S.lastMarked === today){ showReward('Already marked today. Keep the streak clean.'); return; }
+    if(S.lastMarked){
+      const prev = new Date(S.lastMarked); const now = new Date();
+      const diff = Math.round((now - prev)/(1000*60*60*24));
+      if(diff===1){ S.streak++; }
+      else if(diff>1){ S.streak = 1; }
+    } else { S.streak = 1; }
+    S.lastMarked = today;
+    localStorage.setItem('lastMarked', S.lastMarked);
+    localStorage.setItem('streak', S.streak);
+    renderStreak();
+    addXP(15); addProgress(4);
+    showReward('Streak +1 → +15 XP, +4% progress. Keep going!');
+  }
+  function renderStreak(){ document.getElementById('streak').textContent = S.streak; }
+
+  // Variable reward
+  function showReward(msg){
+    const el = document.getElementById('reward');
+    el.textContent = '“' + msg + '”';
+    el.classList.remove('hidden');
+    setTimeout(()=> el.classList.add('hidden'), 6000);
+  }
+
+  // Init
+  (function init(){
+    renderProgress(); renderXP(); renderStreak(); renderClock();
+  })();
+</script>
 </body>
 </html>
+
